@@ -56,6 +56,7 @@ class DiagnosticReport
         #   like...
         #   mask = bits.map {bit_filter} & bits # or bits.map{|bit| bit == bit_filter ? 1 : 0 }
         #   oxygen_generator_candidates &= mask
+        #   # ... None of this was quite right...
         # 
         bits.each.with_index do |bit, i|
           oxygen_generator_candidates[i] = 0 unless bit == bit_filter
@@ -83,9 +84,12 @@ class DiagnosticReport
     end.transpose.map(&:join).map{|bits| bits.to_i(2)}
   end
 
+  # Orders the input bits by frequency. If it's a tie, return `[0,1]` for convenience`.
   # If there is even distribution  => [0, 1]
-  # If there are more 0s than 1s   => [0, 1]
-  # If there are more 1s than 0s   => [1, 0]
+  # If there are more 1s than 0s   => [0, 1]
+  # If there are more 0s than 1s   => [1, 0]
+  # This makes it easy to do bits_by_frequency(bits).last to get "the big one or 1"
+  #   and ().first to get "the little one or 0"
   def bits_by_frequency(bits)
     bits_freq = bits.tally
 
