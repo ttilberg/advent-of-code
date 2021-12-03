@@ -36,30 +36,34 @@ class DiagnosticReport
 
   # Transpose the bit array so we can scan each position
   # For each position, the `gamma` bit is whatever bit has highest frequency,
-  #   and the `epsilson` bit is the other.
+  #   and the `epsilon` bit is the other.
   # Convert the bits back to integers.
   def scan!
     oxygen_generator_candidates = Array.new(report.size) { 1 }
     co2_scrubber_candidates = Array.new(report.size) { 1 }
 
-    @gamma, @epsilon = report.transpose.map do |bits|
-      frequency = bits.tally
-      less, more = frequency.sort_by {|_bit, freq| freq }.map(&:first)
+    @epsilon, @gamma = report.transpose.map do |bits|
 
+      # Since we're already scanning the columns, let's get o2 and co2 along the way:
       unless @oxygen_generator_rating
         candidates = bits.select.with_index {|_bit, i| oxygen_generator_candidates[i] == 1 }
         bit_filter = bits_by_frequency(candidates).last
 
-        # turn off bits unless it's a winner
+        # Refine the list of component candidates
+        # Turn off bits unless it's a winner
         # There's gotta be some clever bit masking move to be applied here...
+        #
+        #   like...
+        #   mask = bits.map {bit_filter} & bits # or bits.map{|bit| bit == bit_filter ? 1 : 0 }
+        #   oxygen_generator_candidates &= mask
+        # 
         bits.each.with_index do |bit, i|
           oxygen_generator_candidates[i] = 0 unless bit == bit_filter
         end
 
-        if oxygen_generator_candidates.select{|bit| bit == 1}.size == 1
+        if oxygen_generator_candidates.sum == 1
           @oxygen_generator_rating = report[oxygen_generator_candidates.find_index{|bit| bit == 1}].join.to_i(2)
         end
-
       end
 
       unless @co2_scrubber_rating
@@ -70,15 +74,18 @@ class DiagnosticReport
           co2_scrubber_candidates[i] = 0 unless bit == bit_filter
         end
 
-        if co2_scrubber_candidates.select{|bit| bit == 1}.size == 1
+        if co2_scrubber_candidates.sum == 1
           @co2_scrubber_rating = report[co2_scrubber_candidates.find_index{|bit| bit == 1}].join.to_i(2)
         end
       end        
 
-      [more, less]
+      bits_by_frequency(bits)
     end.transpose.map(&:join).map{|bits| bits.to_i(2)}
   end
 
+  # If there is even distribution  => [0, 1]
+  # If there are more 0s than 1s   => [0, 1]
+  # If there are more 1s than 0s   => [1, 0]
   def bits_by_frequency(bits)
     bits_freq = bits.tally
 
