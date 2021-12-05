@@ -1,13 +1,10 @@
-require 'set'
-
 class SteamVentReport
   attr_reader :report
   attr_reader :dots, :overlaps
 
   def initialize(report)
     @report = report
-    @dots = Set.new
-    @overlaps = Set.new
+    @dots = Hash.new(0)
   end
 
   def analyze!
@@ -16,24 +13,18 @@ class SteamVentReport
       case
       when x1 == x2
         Range.new(*[y1, y2].sort).each do |y|
-          unless dots.add?([x1, y])
-            overlaps << [x1, y]
-          end
+          dots[[x1, y]] += 1
         end
       when y1 == y2
         Range.new(*[x1, x2].sort).each do |x|
-          unless dots.add?([x, y1])
-            overlaps << [x, y1]
-          end
+          dots[[x, y1]] += 1
         end
       when (x2 - x1).abs == (y2 - y1).abs
         x_range = x1 < x2 ? x1..x2 : x1.downto(x2)
         y_range = y1 < y2 ? y1..y2 : y1.downto(y2)
 
         x_range.zip(y_range).each do |dot|
-          unless dots.add? dot
-            overlaps << dot
-          end
+          dots[dot] += 1
         end
       else
         # This line is not 45 or 90
@@ -41,7 +32,7 @@ class SteamVentReport
 
     end
 
-    overlaps.size
+    dots.values.select{|val| val > 1}.count
   end
 end
 
