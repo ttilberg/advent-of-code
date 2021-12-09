@@ -39,7 +39,7 @@ class World
 
   def solve!
     rooms.each do |(x, y), room|
-      basin = explore(room).uniq.size
+      basin = explore(room).size
 
       if big_beefy_basins.first < basin
         big_beefy_basins.shift
@@ -59,7 +59,7 @@ class World
 
     room.neighbors.map do |x, y|
       explore(rooms[[x, y]], basin)
-    end.flatten
+    end.flatten.uniq
   end
 end
 
