@@ -11,6 +11,7 @@ board.default = 10 # A number higher than 9. (For the borders.)
 risk_level = 0
 
 board.each do |(x, y), val|
+  next if val == 9
   if UPPY_DOWNY_LEFTY_RIGHTY.all? {|⇦⇨, ⇧⇩| board[[x + ⇦⇨, y + ⇧⇩]] > val }
     risk_level += val + 1
   end
