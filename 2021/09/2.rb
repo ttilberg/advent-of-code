@@ -57,8 +57,6 @@ class World
 
     basin << rooms.delete(room.location)
 
-    room.neighbors
-
     room.neighbors.map do |x, y|
       explore(rooms[[x, y]], basin)
     end.flatten
