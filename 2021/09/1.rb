@@ -12,9 +12,8 @@ risk_level = 0
 
 board.each do |(x, y), val|
   next if val == 9
-  if UPPY_DOWNY_LEFTY_RIGHTY.all? {|⇦⇨, ⇧⇩| board[[x + ⇦⇨, y + ⇧⇩]] > val }
-    risk_level += val + 1
-  end
+  next if UPPY_DOWNY_LEFTY_RIGHTY.any? {|⇦⇨, ⇧⇩| board[[x + ⇦⇨, y + ⇧⇩]] < val }
+  risk_level += val + 1
 end
 
 puts risk_level
