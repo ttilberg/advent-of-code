@@ -1,4 +1,4 @@
-input = File.read('data/4.txt')
+input = File.read('input.txt')
 
 class Bingo
   attr_reader :dobbs, :boards
@@ -15,18 +15,6 @@ class Bingo
         board.dobb(dobb)
         return board.score if board.winner?
       end
-    end
-  end
-
-  def last_winner_score
-    dobbs.each do |dobb|
-      boards.each do |board|
-        board.dobb(dobb)
-      end
-      if boards.one? && boards.last.winner?
-        return boards.last.score
-      end
-      boards.delete_if(&:winner?)
     end
   end
 
@@ -65,7 +53,7 @@ class Bingo
   end
 end
 
-puts Bingo.new(input).last_winner_score
+puts Bingo.new(input).first_winner_score
 
 require 'minitest/autorun'
 
@@ -102,10 +90,6 @@ end
 class BingoTest < Minitest::Test
   def test_score
     assert_equal 4512, Bingo.new(GAME).first_winner_score
-  end
-
-  def test_last_winner_score
-    assert_equal 1924, Bingo.new(GAME).last_winner_score
   end
 
   GAME = <<~TXT

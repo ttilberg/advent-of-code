@@ -101,5 +101,5 @@ class DiagnosticReport
   end
 end
 
-report = DiagnosticReport.new(File.read('data/3.txt'))
+report = DiagnosticReport.new(File.read('input.txt'))
 puts report.to_h

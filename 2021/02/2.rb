@@ -23,7 +23,7 @@ end
 
 gizmo = WaterBilly.new
 
-File.read('data/day-2-input.txt').each_line do |instruction|
+File.read('input.txt').each_line do |instruction|
   command, units = instruction.split(' ').map(&:strip)
   gizmo.public_send(command, units.to_i)
 end

@@ -25,4 +25,4 @@ class DiagnosticReport
   end
 end
 
-puts DiagnosticReport.new(File.read('data/3.txt')).power_consumption
+puts DiagnosticReport.new(File.read('input.txt')).power_consumption

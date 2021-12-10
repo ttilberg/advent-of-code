@@ -21,7 +21,7 @@ end
 
 gizmo = WaterBilly.new
 
-File.read('data/day-2-input.txt').each_line do |instruction|
+File.read('input.txt').each_line do |instruction|
   direction, amplitude = instruction.split(' ').map(&:strip)
   gizmo.public_send(direction, amplitude.to_i)
 end
