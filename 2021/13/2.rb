@@ -31,7 +31,7 @@
 
     (0..y_max).each do |y|
       (0..x_max).each do |x|
-        print dots.include?([x, y]) ? '#' : ' '
+        print dots.include?([x, y]) ? '■' : ' '
       end
       print $/
     end
