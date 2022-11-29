@@ -1,6 +1,24 @@
 #!/usr/bin/env ruby
 
-# Put this file in your AoC directory, and then `ln -s $PWD/aoc <somewhere/on/your/path>`
+# This helper lets you setup a consistent, barebones project structure for each AoC challenge.
+# It creates basic files if they don't exist in /this/directory/yyyy/dd/*.*
+# Finally, it shows the links to the challenge page, and the first challenge file,
+#   which lets you click straight into your editor.
+#
+# Files created are based on my personal workflow. Feel free to modify this script to match your own!
+#   1.rb
+#   input.rb
+#
+# Installation:
+#   Add this script to the directory you want as your root AoC directory.
+#   I use `/Users/ttilberg/dev/advent-of-code` for example.
+#   You can now run it with `./aoc`.
+#   To get easier, global access to the script you can add it to your path:
+#     `ln -s $PWD/aoc <somewhere/on/your/path/aoc>`
+#
+#   For example, I keep `~/bin/` on my path:
+#     `ln -s $PWD/aoc $HOME/bin/aoc`
+#
 
 require "fileutils"
 require "date"
