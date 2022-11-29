@@ -1,0 +1,113 @@
+#!/usr/bin/env ruby
+
+# Put this file in your AoC directory, and then `ln -s $PWD/aoc <somewhere/on/your/path>`
+
+require "fileutils"
+require "date"
+require "json"
+
+module AoC
+  class Path
+    class ParseError < StandardError; end
+
+    attr_reader :year, :day
+
+    def year=(val)
+      year = val.to_i
+      year += 2000 if year < 100
+      unless (2015..2050).include? year
+        raise ParseError, "Year must be between 2015 and 2050. Received: `#{val}`, parsed to: `#{year}`"
+      end
+
+      @year = year
+    end
+
+    def day=(val)
+      day = val.to_i
+      unless (1..25).include? day
+        raise ParseError, "Day must be between 1 and 25. Received: `#{val}`, parsed to: `#{day}`"
+      end
+      @day = day
+    end
+
+    def url
+      "https://adventofcode.com/#{year}/day/#{day}"
+    end
+
+    def dir
+      "#{__dir__}/#{year}/#{day.to_s.rjust(2, "0")}"
+    end
+
+    def to_h
+      {
+        year:,
+        day:,
+        url:,
+        dir:,
+      }
+    end
+  end
+end
+
+options = AoC::Path.new
+
+case ARGV.to_a
+in ["--help" | "help" | "-h" | "h"]
+  puts <<~HELP
+    🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄
+    
+    This AoC helper sets up your project for the given challenge.
+
+    Running `aoc` with no arguments creates a challenge for the current date.
+
+    You can pass in a year and date, or a url to create a challenge for a different day.
+
+    Examples:
+      aoc
+      aoc 2022 2
+      aoc 22 2
+      aoc 2022 02
+      aoc https://adventofcode.com/2022/day/2
+
+    🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄
+
+  HELP
+  exit 0
+in [/\d{2,4}/ => year, /\d{1,2}/ => day]
+  # Accept:
+  #   yyyy dd
+  #   yy d
+
+  options.year = year
+  options.day = day
+in [%r{(\d{2,4})/(?:day/)?(\d{1,2})}]
+  # Accept:
+  #   2022/01
+  #   22/1
+  #   https://adventofcode.com/2022/day/1
+
+  options.year = $1
+  options.day = $2
+else
+  today = Date.today
+  puts "No arguments given, using today's date: #{today} to create AoC"
+  
+  options.year = today.year
+  options.day = today.day
+end
+
+FileUtils.mkdir_p options.dir
+FileUtils.touch "#{options.dir}/input.txt"
+FileUtils.touch "#{options.dir}/1.rb"
+
+puts <<~BANNER
+
+  🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄
+
+     #{options.url}
+
+     Ready to hack at:
+       #{options.dir}/1.rb
+
+  🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄
+BANNER
