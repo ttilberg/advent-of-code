@@ -107,7 +107,7 @@ in [%r{(\d{2,4})/(?:day/)?(\d{1,2})}]
   options.year = $1
   options.day = $2
 else
-  today = Date.today
+  today = DateTime.now.new_offset("-05:00")
   puts "No arguments given, using today's date: #{today} to create AoC"
   
   options.year = today.year
