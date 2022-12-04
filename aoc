@@ -127,5 +127,8 @@ puts <<~BANNER
      Ready to hack at:
        #{options.dir}/1.rb
 
+
   🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄
 BANNER
+
+`subl #{__dir__}`
