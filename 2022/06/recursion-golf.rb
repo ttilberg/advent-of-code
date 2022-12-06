@@ -1,4 +1,4 @@
-p (🏌=->s,b,i=0{return i if b.slice(i,s).uniq.size==s;🏌[s,b,i+1]})[14,$<.read.bytes]
+(🏌=->s,b,i=0{exit(p i) if b.slice(i,s).uniq.size==s;🏌[s,b,i+1]})[14,$<.read.bytes]
 
 # Similar to:
 # def go! size, input, start=0
