@@ -131,4 +131,4 @@ puts <<~BANNER
   🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄
 BANNER
 
-`subl #{__dir__}`
+`subl #{__dir__} #{} "#{options.dir}/1.rb" "#{options.dir}/input.txt"`
