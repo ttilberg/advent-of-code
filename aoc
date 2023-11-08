@@ -64,6 +64,26 @@ module AoC
         dir:,
       }
     end
+
+    def input_url
+      "#{url}/input"
+    end
+
+    def input
+      session = File.read('session.txt')
+      raise if session.nil? || session.empty?
+      $stderr.puts "Attempting to download puzzle input from #{input_url}..."
+      `curl --silent --cookie "session=#{session}" #{input_url}`
+    rescue
+      <<~TXT
+        You can get the puzzle input from:
+        #{input_url}
+
+        If you save your session cookie value as
+          `#{__dir__}/session.txt`
+        it will be downloaded for you.
+      TXT
+    end
   end
 end
 
@@ -115,7 +135,7 @@ else
 end
 
 FileUtils.mkdir_p options.dir
-FileUtils.touch "#{options.dir}/input.txt"
+File.write("#{options.dir}/input.txt", options.input)
 FileUtils.touch "#{options.dir}/1.rb"
 
 puts <<~BANNER
@@ -131,4 +151,4 @@ puts <<~BANNER
   🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄 🎄
 BANNER
 
-`subl #{__dir__} #{} "#{options.dir}/1.rb" "#{options.dir}/input.txt"`
+`subl #{__dir__} #{} "#{options.dir}/input.txt" "#{options.dir}/1.rb"`
