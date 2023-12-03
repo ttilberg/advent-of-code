@@ -1,16 +1,3 @@
-INPUT = <<~TXT
-467..114..
-...*......
-..35..633.
-......#...
-617*......
-.....+.58.
-..592.....
-......755.
-...$.*....
-.664.598..
-TXT
-
 MOVEMENT = [-1, 0, 1].product([-1, 0, 1])
 
 class Value
@@ -42,7 +29,7 @@ File.read('input.txt').lines.each.with_index do |line, y|
     end
 
     if char[/\d/]
-      # Starting a new number
+      # This is a new number, flush value buffer:
       if last_char[/\d/].nil?
         values << value if value.chars.any?
         value = Value.new
@@ -57,8 +44,8 @@ File.read('input.txt').lines.each.with_index do |line, y|
   values << value if value.chars.any?
 end
 
-symbols.keys.each do |(x, y)|
-  MOVEMENT.each do |(dx, dy)|
+symbols.keys.each do |x, y|
+  MOVEMENT.each do |dx, dy|
     coord = [x + dx, y + dy]
     if value = value_coords[coord]
       value.keep = true
