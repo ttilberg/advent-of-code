@@ -79,7 +79,7 @@ module AoC
         You can get the puzzle input from:
         #{input_url}
 
-        If you save your session cookie value as
+        If this file doesn't exist, and you save your session cookie value as
           `#{__dir__}/session.txt`
         it will be downloaded for you.
       TXT
@@ -135,7 +135,7 @@ else
 end
 
 FileUtils.mkdir_p options.dir
-File.write("#{options.dir}/input.txt", options.input)
+File.exist?("#{options.dir}/input.txt") or File.write("#{options.dir}/input.txt", options.input)
 FileUtils.touch "#{options.dir}/1.rb"
 
 puts <<~BANNER
