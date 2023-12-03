@@ -11,16 +11,30 @@ INPUT = <<~TXT
 .664.598..
 TXT
 
+MOVEMENT = [-1, 0, 1].product([-1, 0, 1])
 
-# touchie thingies: Symbols
+class Value
+  attr_accessor :chars, :coords, :keep
+  def initialize
+    @coords = []
+    @chars = []
+    @keep = false
+  end
 
-total = 0
+  def value
+    @chars.join.to_i
+  end
+end
+
 symbols = {}
-numbers = {}
+value_coords = {}
+values = []
 
 File.read('input.txt').lines.each.with_index do |line, y|
   line.chomp!
-  total += line.scan(/\d+/).map(&:to_i).sum
+
+  value = Value.new
+  last_char = ''
 
   line.chars.each.with_index do |char, x|
     if char[/[^\d.]/]
@@ -28,54 +42,28 @@ File.read('input.txt').lines.each.with_index do |line, y|
     end
 
     if char[/\d/]
-      numbers[[x, y]] = char
+      # Starting a new number
+      if last_char[/\d/].nil?
+        values << value if value.chars.any?
+        value = Value.new
+      end
+      value.chars << char
+      value.coords << [x, y]
+      value_coords[[x, y]] = value
     end
-  end
-end
 
-# pp(symbols:, numbers:)
+    last_char = char
+  end
+  values << value if value.chars.any?
+end
 
 symbols.keys.each do |(x, y)|
-  [-1, 0, 1].product([-1, 0, 1]).each do |(dx, dy)|
-    coord = [x+ dx, y+dy]
-    if numbers[coord]
-      # delete this
-      numbers.delete(coord)
-
-      # delete left
-      offset = -1
-      while numbers[[x + dx + offset, y + dy]]
-        numbers.delete([x + dx + offset, y + dy])
-        offset -= 1
-      end
-
-      # delete right...
-      offset = 1
-      while numbers[[x + dx + offset, y + dy]]
-        numbers.delete([x + dx + offset, y + dy])
-        offset += 1
-      end
+  MOVEMENT.each do |(dx, dy)|
+    coord = [x + dx, y + dy]
+    if value = value_coords[coord]
+      value.keep = true
     end
   end
 end
 
-buffer = ''
-sum = 0
-
-last_x = -1
-last_y = -1
-numbers.each do |(x, y), value|
-  if x - last_x > 1 || last_y != y
-    # Flush
-    sum += buffer.to_i
-    buffer = ''
-  end
-
-  buffer << value
-  last_x = x
-  last_y = y
-end
-
-sum += buffer.to_i
-
-p(total - sum)
+p(values.select(&:keep).map(&:value).sum)

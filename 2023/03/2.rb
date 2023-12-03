@@ -11,116 +11,62 @@ INPUT = <<~TXT
 .664.598..
 TXT
 
+MOVEMENT = [-1, 0, 1].product([-1, 0, 1])
 
-# touchie thingies: Symbols
+class Value
+  attr_accessor :chars
+  def initialize
+    @chars = []
+  end
 
-total = 0
+  def value
+    @chars.join.to_i
+  end
+end
+
 symbols = {}
-numbers = {}
-
-last_char = ''
-
-last_value = {
-  value: '',
-  coords: []
-}
-
+value_coords = {}
 values = []
 
 File.read('input.txt').lines.each.with_index do |line, y|
   line.chomp!
-  total += line.scan(/\d+/).map(&:to_i).sum
+
+  last_char = ''
+  value = Value.new
 
   line.chars.each.with_index do |char, x|
     if char == '*'
       symbols[[x, y]] = char
     end
 
+    # Flush value buffer
     if last_char[/\d/] && char[/\d/].nil?
-      values << last_value
-
-      last_value = {
-        value: '',
-        coords: []
-      }
+      values << value
+      value = Value.new
     end
 
+    # Append value buffer
     if char[/\d/]
-      last_value[:value] << char
-      last_value[:coords] << [x,y]
+      value.chars << char
+      value_coords[[x, y]] = value
     end
 
     last_char = char
   end
+  values << value if value.chars.any?
 end
 
-values.each do |v|
-  v[:value] = v[:value].to_i
-end
-
-p(values:)
 sum = 0
 
 symbols.keys.each do |x, y|
-  # For each sprocket thingy...
-  touching_fellas = values.select do |value|
-    [-1, 0, 1].product([-1, 0, 1]).any? {|dx, dy| value[:coords].include?([x + dx, y + dy])}
-  end
+  neighbors = MOVEMENT
+    .map{|dx, dy| value_coords[[x + dx, y + dy]]}
+    .compact.uniq
 
-  if touching_fellas.size == 2
-    sum += touching_fellas.map{|fella| fella[:value]}.reduce(&:*)
+  if neighbors.size == 2
+    sum += neighbors.map(&:value).reduce(&:*)
   end
 end
 
-
-# symbols.keys.each do |(x, y)|
-#   [-1, 0, 1].product([-1, 0, 1]).each do |(dx, dy)|
-#     coord = [x+ dx, y+dy]
-#     if numbers[coord]
-#       puts "Entering delete mode at #{coord}}"
-#       # delete left, delete right...
-
-#       numbers.delete(coord)
-
-#       offset = -1
-#       while numbers[[x + dx + offset, y + dy]]
-#         numbers.delete([x + dx + offset, y + dy])
-#         offset -= 1
-#       end
-
-#       # delete right...
-#       offset = 1
-#       while numbers[[x + dx + offset, y + dy]]
-#         numbers.delete([x + dx + offset, y + dy])
-#         offset += 1
-#       end
-#     end
-#   end
-# end
-
-# p(numbers:)
-# bad_guys = ''
-# sum = 0
-
-# last_x = -1
-# last_y = -1
-# numbers.each do |(x, y), value|
-#   if x - last_x > 1 || last_y != y
-#     puts "Flushing"
-#     sum += bad_guys.to_i
-#     bad_guys = ''
-#   end
-
-#   bad_guys << value
-#   last_x = x
-#   last_y = y
-#   p(x:, y:, value: )
-#   p(bad_guys:)
-# end
-
-# sum += bad_guys.to_i
-
-# p(total - sum)
-
 p sum
-# # goal: 467835
+# # goal: 84883664
