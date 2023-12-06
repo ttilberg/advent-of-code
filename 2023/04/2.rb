@@ -15,7 +15,7 @@ File.read('input.txt').lines.each do |line|
   next if my_winners.empty?
 
   my_winners.count.times do |i|
-    cards[card + i + 1] += (1 * cards[card])
+    cards[card + i + 1] += cards[card]
   end
 end
 
