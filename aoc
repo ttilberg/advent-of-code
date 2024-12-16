@@ -70,7 +70,7 @@ module AoC
     end
 
     def input
-      session = File.read('session.txt')
+      session = File.read(File.join(__dir__, 'session.txt'))
       raise if session.nil? || session.empty?
       $stderr.puts "Attempting to download puzzle input from #{input_url}..."
       `curl --silent --cookie "session=#{session}" #{input_url}`
