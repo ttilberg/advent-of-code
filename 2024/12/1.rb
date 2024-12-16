@@ -1,5 +1,5 @@
 class Map
-  attr_reader :nodes, :node_regions, :region_nodes, :width, :height, :region_perimeters
+  attr_reader :nodes, :node_regions, :region_nodes, :region_perimeters
 
   def initialize(input = 'input.txt')
     # {[x, y] => 'A'}
@@ -14,13 +14,8 @@ class Map
     # {1 => 2}
     @region_perimeters = Hash.new(0)
 
-
-    @width, @height = 0, 0
-
     File.foreach(input).with_index do |line, y|
-      @height = y if y > @height
       line.chomp.chars.each.with_index do |char, x|
-        @width = x if x > @width
         @nodes[[x, y]] = char
       end
     end
@@ -35,6 +30,10 @@ class Map
     [ 0,  1]
   ]
 
+  # For each node, if it's not already assigned a region, scan for neighbors.
+  # For each neighbor, queue exploration if it's the same region,
+  #   or add to the perimeter count of this region if it was blocked.
+  #
   def detect_regions!
     current_region = 0
 
