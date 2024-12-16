@@ -146,7 +146,7 @@ end
     elsif [min_x, max_x].include? x
       print 'o'
     elsif VISITED.include?([x, y])
-      print 'v'
+      print ' '
     elsif ROOMS[[x, y]] == '*'
       print ' '
     elsif ROOMS[[x, y]]
