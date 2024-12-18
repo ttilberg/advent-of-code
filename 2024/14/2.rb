@@ -10,8 +10,7 @@ HEIGHT = ENV['SAMPLE'] ? 7 : 103
 
 time = 0
 
-
-# After printing the robot grid for a few hundred, I noticed that 
+# After printing the robot grid for a few hundred rounds, I noticed that 
 # every 101 frames, starting from 14 looked "more organized" than others.
 # Being that 101 is the width of the map value, I thought I should print
 # at each interval of W and H loops. Offset by frame 14.
