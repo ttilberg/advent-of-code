@@ -1,0 +1,54 @@
+#!/usr/bin/env ruby
+
+# The annual AOC raffle script.
+#
+# There are 10 drawings for $50 each.
+DRAWINGS = 10
+# Each star earned in the AOC season gets an entry.
+# A winner can win up to 3 times.
+TOO_MUCH_WINNING = 3
+#
+# You can get the standings from:
+# https://adventofcode.com/2024/leaderboard/private/view/1756785.json
+#
+# They don't like automated scripts hitting their API,
+# so just get it once and save it or copy paste it.
+#
+# `pbpaste | ./raffle` or `./raffle 2024.json`
+
+require 'json'
+
+standings = JSON.parse(ARGF.read)
+
+user_stars = standings["members"].map do |id, user|
+  [ user["name"], user["stars"].to_i ]
+end
+  .select { |user, stars| stars > 0 }
+  .sort_by { |user, stars| 0 - stars }
+  .to_h
+
+
+puts "\nNice work folks!\n\n"
+puts JSON.pretty_generate(user_stars)
+
+tickets = user_stars.map {|user, stars| Array.new(stars) { user }}.flatten
+
+wins = Hash.new(0)
+
+DRAWINGS.times do
+  winner = tickets.shuffle!.pop
+
+  redo if wins[winner] in TOO_MUCH_WINNING
+  wins[winner] += 1
+end
+
+puts "\n"
+puts "    ⭐⭐⭐ $50 ⭐⭐⭐"
+
+winner_width = wins.keys.map(&:length).max
+
+wins
+  .sort_by { |winner, wins| [0 - wins, winner] }
+  .each do |winner, wins|
+    puts "  #{winner.rjust(winner_width)}: #{('💰' * wins).rjust(3)}"
+  end
