@@ -16,7 +16,7 @@ while label = labels.shift
 
   if schmabels.any?
     schmabels.each { labels.delete(it) }
-    label = (schmabels << label).reduce(&:join)
+    label = schmabels.prepend(label).reduce(&:join)
     labels << label and next
   end
 
