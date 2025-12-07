@@ -1,1 +1,1 @@
-p File.read('input.txt').lines.map{it.scan(/[0-9*+]+/)}.then{|*vals, op| vals.transpose.zip(op).map{|vals, op| vals.map(&:to_i).reduce(&op.to_sym)}}.sum
+p lol: File.foreach('input.txt').map{it.scan(/[0-9*+]+/)}.then{|*vals, op| vals.transpose.zip(op).map{|vals, op| vals.map(&:to_i).reduce(op)}}.sum
